@@ -9,7 +9,24 @@ dat <- read_sheet(ss, sheet = "Trends")
 ui <- fluidPage(
   
   # App title ----
-  titlePanel(h1("Rhode Island COVID-19 Tracker"))
+  titlePanel(h1("Rhode Island COVID-19 Tracker", align="center")),
+  
+  navlistPanel(
+    "Testing Data",
+    tabPanel("New Positive Labs"),
+    tabPanel("Total Positive Labs"),
+    tabPanel("New Negative Labs"),
+    tabPanel("Total Negative Labs"),
+    tabPanel("Total Tested"),
+    "Hospital Data",
+    tabPanel("New Hospital Admissions"),
+    tabPanel("Cumulative Hospital Admissions"),
+    tabPanel("New Hospital Discharges"),
+    tabPanel("Cumulative Hospital Discharges"),
+    "Mortality Data",
+    tabPanel("Deaths"),
+    tabPanel("Total Deaths")
+  )
   
   
 )
