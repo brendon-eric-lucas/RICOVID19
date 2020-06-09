@@ -31,51 +31,51 @@ ui <- fluidPage(
     "Testing Data", # testing data panels
     
     tabPanel("New Positive Labs", 
-              mainPanel(plotOutput("New Positive Labs")) 
+              mainPanel(plotOutput("New Positive Labs"), actionButton("refresh", "Refresh")) 
             ),
     
     tabPanel("Total Positive Labs", 
-              mainPanel(plotOutput("Total Positive Labs"))
+              mainPanel(plotOutput("Total Positive Labs"), actionButton("refresh", "Refresh"))
              ),
     
     tabPanel("New Negative Labs", 
-              mainPanel(plotOutput("New Negative Labs"))
+              mainPanel(plotOutput("New Negative Labs"), actionButton("refresh", "Refresh"))
              ),
     
     tabPanel("Total Negative Labs", 
-              mainPanel(plotOutput("Total Negative Labs"))
+              mainPanel(plotOutput("Total Negative Labs"), actionButton("refresh", "Refresh"))
              ),
     
     tabPanel("Total Tested",
-              mainPanel(plotOutput("Total Tested"))
+              mainPanel(plotOutput("Total Tested"), actionButton("refresh", "Refresh"))
              ),
     
     "Hospital Data", # hospital data panels
     
     tabPanel("New Hospital Admissions",
-              mainPanel(plotOutput("New Hospital Admissions"))
+              mainPanel(plotOutput("New Hospital Admissions"), actionButton("refresh", "Refresh"))
              ),
     
     tabPanel("Cumulative Hospital Admissions",
-              mainPanel(plotOutput("Cumulative Hospital Admissions"))
+              mainPanel(plotOutput("Cumulative Hospital Admissions"), actionButton("refresh", "Refresh"))
              ),
     
     tabPanel("New Hospital Discharges",
-              mainPanel(plotOutput("New Hospital Discharges"))
+              mainPanel(plotOutput("New Hospital Discharges"), actionButton("refresh", "Refresh"))
              ),
     
     tabPanel("Cumulative Hospital Discharges",
-              mainPanel(plotOutput("Cumulative Hospital Discharges"))
+              mainPanel(plotOutput("Cumulative Hospital Discharges"), actionButton("refresh", "Refresh"))
              ),
     
     "Mortality Data", # mortality data panels
     
     tabPanel("Deaths",
-              mainPanel(plotOutput("Deaths"))
+              mainPanel(plotOutput("Deaths"), actionButton("refresh", "Refresh"))
              ),
     
     tabPanel("Total Deaths",
-              mainPanel(plotOutput("Total Deaths"))
+              mainPanel(plotOutput("Total Deaths"), actionButton("refresh", "Refresh"))
              )
   )
 )
