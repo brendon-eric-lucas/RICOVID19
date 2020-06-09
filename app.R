@@ -145,7 +145,8 @@ server <- function(input, output) {
   output$"Total Deaths" <- renderPlot({
     ggplot(data(), aes(x=Date, y=total_deaths)) + 
     geom_area(fill="blue", alpha=0.2) + 
-    geom_line()
+    geom_line() +
+    labs(x = "Date", y = "Total Deaths")
   })
 }
 
