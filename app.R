@@ -4,10 +4,10 @@ library(shiny)
 
 # set default access for a public google shhet
 gs4_deauth()
-# create google sheet object
-ss <- "https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272"
+
 # render google sheet as dataframe
-dat <- read_sheet(ss, sheet = "Trends")
+dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                  sheet = "Trends")
 
 # rename columns
 names(dat)[names(dat) == 'New positive labs'] <- 'new_positive_labs'
@@ -31,56 +31,123 @@ ui <- fluidPage(
     "Testing Data", # testing data panels
     
     tabPanel("New Positive Labs", 
-              mainPanel(plotOutput("New Positive Labs"), actionButton("refresh", "Refresh")) 
+              mainPanel(plotOutput("New Positive Labs"), actionButton("update_npl", "Update")) 
             ),
     
     tabPanel("Total Positive Labs", 
-              mainPanel(plotOutput("Total Positive Labs"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("Total Positive Labs"), actionButton("update_tpl", "Update"))
              ),
     
     tabPanel("New Negative Labs", 
-              mainPanel(plotOutput("New Negative Labs"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("New Negative Labs"), actionButton("update_nnl", "Update"))
              ),
     
     tabPanel("Total Negative Labs", 
-              mainPanel(plotOutput("Total Negative Labs"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("Total Negative Labs"), actionButton("update_ntl", "Update"))
              ),
     
     tabPanel("Total Tested",
-              mainPanel(plotOutput("Total Tested"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("Total Tested"), actionButton("update_tt", "Update"))
              ),
     
     "Hospital Data", # hospital data panels
     
     tabPanel("New Hospital Admissions",
-              mainPanel(plotOutput("New Hospital Admissions"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("New Hospital Admissions"), actionButton("update_nha", "Update"))
              ),
     
     tabPanel("Cumulative Hospital Admissions",
-              mainPanel(plotOutput("Cumulative Hospital Admissions"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("Cumulative Hospital Admissions"), actionButton("update_cha", "Update"))
              ),
     
     tabPanel("New Hospital Discharges",
-              mainPanel(plotOutput("New Hospital Discharges"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("New Hospital Discharges"), actionButton("update_nhd", "Update"))
              ),
     
     tabPanel("Cumulative Hospital Discharges",
-              mainPanel(plotOutput("Cumulative Hospital Discharges"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("Cumulative Hospital Discharges"), actionButton("update_chd", "Update"))
              ),
     
     "Mortality Data", # mortality data panels
     
     tabPanel("Deaths",
-              mainPanel(plotOutput("Deaths"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("Deaths"), actionButton("update_d", "Update"))
              ),
     
     tabPanel("Total Deaths",
-              mainPanel(plotOutput("Total Deaths"), actionButton("refresh", "Refresh"))
+              mainPanel(plotOutput("Total Deaths"), actionButton("update_td", "Update"))
              )
   )
 )
 
 server <- function(input, output) {
+  
+  # set up event observers
+  observeEvent(input$update_npl, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                      sheet = "Trends"
+              )}
+  )
+  
+  observeEvent(input$update_tpl, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_nnl, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_ntl, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_tt, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_nha, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_cha, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_nhd, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_chd, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_d, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
+  
+  observeEvent(input$update_td, 
+               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                                  sheet = "Trends"
+               )}
+  )
   
   data <- reactive({dat})
   
