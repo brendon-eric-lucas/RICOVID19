@@ -85,21 +85,68 @@ server <- function(input, output) {
   data <- reactive({dat})
   
   # plotting for testing data
-  output$"New Positive Labs" <- renderPlot({ggplot(data(), aes(x=Date, y=new_positive_labs)) + geom_line() + labs(x = "Date", y = "New Positive Labs")})
-  output$"Total Positive Labs" <- renderPlot({ggplot(data(), aes(x=Date, y=total_positive_labs)) + geom_area(fill="blue", alpha=0.2) + geom_line() + labs(x = "Date", y = "Total Positive Labs")})
-  output$"New Negative Labs" <- renderPlot({ggplot(data(), aes(x=Date, y=new_negative_labs)) + geom_line() + labs(x = "Date", y = "New Negative Labs")})
-  output$"Total Negative Labs" <- renderPlot({ggplot(data(), aes(x=Date, y=total_negative_labs)) + geom_area(fill="blue", alpha=0.2) + geom_line() + labs(x = "Date", y = "Total Negative Labs")})
-  output$"Total Tested" <- renderPlot({ggplot(data(), aes(x=Date, y=total_tested)) + geom_area(fill="blue", alpha=0.2) + geom_line() + labs(x = "Date", y = "Total Tested")})
+  output$"New Positive Labs" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=new_positive_labs)) + 
+    geom_line() + labs(x = "Date", y = "New Positive Labs")
+  })
+  
+  output$"Total Positive Labs" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=total_positive_labs)) + 
+    geom_area(fill="blue", alpha=0.2) + geom_line() +
+    labs(x = "Date", y = "Total Positive Labs")
+  })
+  
+  output$"New Negative Labs" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=new_negative_labs)) + 
+    geom_line() + 
+    labs(x = "Date", y = "New Negative Labs")
+  })
+  
+  output$"Total Negative Labs" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=total_negative_labs)) + 
+    geom_area(fill="blue", alpha=0.2) + geom_line() +
+    labs(x = "Date", y = "Total Negative Labs")
+  })
+  
+  output$"Total Tested" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=total_tested)) + 
+    geom_area(fill="blue", alpha=0.2) + geom_line() + 
+    labs(x = "Date", y = "Total Tested")
+  })
     
   # plotting for hospital data
-  output$"New Hospital Admissions" <-renderPlot({ggplot(data(), aes(x=Date, y=new_hospital_admits)) + geom_line() + labs(x = "Date", y = "New Hospital Admissions")})
-  output$"Cumulative Hospital Admissions" <- renderPlot({ggplot(data(), aes(x=Date, y=cumulative_hospital_admits)) + geom_area(fill="blue", alpha=0.2) + geom_line() + labs(x = "Date", y = "Cumulative Hospital Admissions")})
-  output$"New Hospital Discharges" <- renderPlot({ggplot(data(), aes(x=Date, y=new_hospital_discharges)) + geom_line() + labs(x = "Date", y = "New Hospital Discharges")})
-  output$"Cumulative Hospital Discharges" <- renderPlot({ggplot(data(), aes(x=Date, y=cumulative_hospital_discharges)) + geom_area(fill="blue", alpha=0.2) + geom_line() + labs(x = "Date", y = "Cumulative Hospital Discharges")})
+  output$"New Hospital Admissions" <-renderPlot({
+    ggplot(data(), aes(x=Date, y=new_hospital_admits)) + 
+    geom_line() + 
+    labs(x = "Date", y = "New Hospital Admissions")
+  })
+  
+  output$"Cumulative Hospital Admissions" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=cumulative_hospital_admits)) + 
+    geom_area(fill="blue", alpha=0.2) + geom_line() + 
+    labs(x = "Date", y = "Cumulative Hospital Admissions")
+  })
+  
+  output$"New Hospital Discharges" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=new_hospital_discharges)) + 
+    geom_line() + 
+    labs(x = "Date", y = "New Hospital Discharges")
+  })
+  
+  output$"Cumulative Hospital Discharges" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=cumulative_hospital_discharges)) + 
+      geom_area(fill="blue", alpha=0.2) + geom_line() +
+      labs(x = "Date", y = "Cumulative Hospital Discharges")
+  })
   
   # plotting for mortality data
   output$"Deaths" <- renderPlot({ggplot(data(), aes(x=Date, y=Deaths)) + geom_line()})
-  output$"Total Deaths" <- renderPlot({ggplot(data(), aes(x=Date, y=total_deaths)) + geom_area(fill="blue", alpha=0.2) + geom_line()})
+  
+  output$"Total Deaths" <- renderPlot({
+    ggplot(data(), aes(x=Date, y=total_deaths)) + 
+    geom_area(fill="blue", alpha=0.2) + 
+    geom_line()
+  })
 }
 
 shinyApp(ui = ui, server = server)
