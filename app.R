@@ -178,6 +178,12 @@ server <- function(input, output) {
     ma <- rollmean(ts, length(dt())/7)
     na.locf(merge(ts, ma))
   })
+  
+  d.data <- reactive({
+    ts <- xts(dat2()$`Deaths`, dt())
+    ma <- rollmean(ts, length(dt())/7)
+    na.locf(merge(ts, ma))
+  })
     
   # plotting for testing data
   output$"New Positive Labs" <- renderPlot({
@@ -191,7 +197,9 @@ server <- function(input, output) {
     ggplot(data(), aes(x=Date, y=total_positive_labs)) + 
     geom_area(fill="blue", alpha=0.2) + geom_line() +
     labs(x = "Date", y = "Total Positive Labs") +
-    theme(panel.background = element_rect(fill = "#D3D3D3"))
+    theme(panel.background = element_rect(fill = "#D3D3D3"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
   })
   
   output$"New Negative Labs" <- renderPlot({
@@ -205,14 +213,18 @@ server <- function(input, output) {
     ggplot(data(), aes(x=Date, y=total_negative_labs)) + 
     geom_area(fill="blue", alpha=0.2) + geom_line() +
     labs(x = "Date", y = "Total Negative Labs") +
-    theme(panel.background = element_rect(fill = "#D3D3D3"))
+    theme(panel.background = element_rect(fill = "#D3D3D3"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
   })
   
   output$"Total Tested" <- renderPlot({
     ggplot(data(), aes(x=Date, y=total_tested)) + 
     geom_area(fill="blue", alpha=0.2) + geom_line() + 
     labs(x = "Date", y = "Total Tested") +
-    theme(panel.background = element_rect(fill = "#D3D3D3"))
+    theme(panel.background = element_rect(fill = "#D3D3D3"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
   })
     
   # plotting for hospital data
@@ -227,7 +239,9 @@ server <- function(input, output) {
     ggplot(data(), aes(x=Date, y=cumulative_hospital_admits)) + 
     geom_area(fill="blue", alpha=0.2) + geom_line() + 
     labs(x = "Date", y = "Cumulative Hospital Admissions") +
-    theme(panel.background = element_rect(fill = "#D3D3D3"))
+    theme(panel.background = element_rect(fill = "#D3D3D3"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
   })
   
   output$"New Hospital Discharges" <- renderPlot({
@@ -241,21 +255,27 @@ server <- function(input, output) {
     ggplot(data(), aes(x=Date, y=cumulative_hospital_discharges)) + 
       geom_area(fill="blue", alpha=0.2) + geom_line() +
       labs(x = "Date", y = "Cumulative Hospital Discharges") +
-      theme(panel.background = element_rect(fill = "#D3D3D3"))
+      theme(panel.background = element_rect(fill = "#D3D3D3"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank())
   })
   
   # plotting for mortality data
-  output$"Deaths" <- renderPlot({ggplot(data(), aes(x=Date, y=Deaths)) + 
-      geom_line() +
-      theme(panel.background = element_rect(fill = "#D3D3D3"))
-    })
+  output$"Deaths" <- renderPlot({
+    plot(d.data(), bg="#D3D3D3",
+         main='Daily Mortality \nWith Seven Day Rolling Mean', 
+         yaxis.right=FALSE, 
+         grid.ticks.lwd=0)
+  })
   
   output$"Total Deaths" <- renderPlot({
     ggplot(data(), aes(x=Date, y=total_deaths)) + 
     geom_area(fill="blue", alpha=0.2) + 
     geom_line() +
     labs(x = "Date", y = "Total Deaths") +
-    theme(panel.background = element_rect(fill = "#D3D3D3"))
+    theme(panel.background = element_rect(fill = "#D3D3D3"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
   })
 }
 
