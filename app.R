@@ -1,5 +1,7 @@
 library(googlesheets4)
 library(ggplot2)
+library(xts)
+library(zoo)
 library(shiny)
 
 # set default access for a public google shhet
@@ -9,15 +11,11 @@ gs4_deauth()
 dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
                   sheet = "Trends")
 
-# rename columns
-names(dat)[names(dat) == 'New positive labs'] <- 'new_positive_labs'
+# rename total columns
 names(dat)[names(dat) == 'Total positive labs'] <- 'total_positive_labs'
-names(dat)[names(dat) == 'New negative labs'] <- 'new_negative_labs'
 names(dat)[names(dat) == 'Total negative labs'] <- 'total_negative_labs'
 names(dat)[names(dat) == 'Total tested'] <- 'total_tested'
-names(dat)[names(dat) == 'New hospital admissions'] <- 'new_hospital_admits'
 names(dat)[names(dat) == 'Cumulative hospital admissions'] <- 'cumulative_hospital_admits'
-names(dat)[names(dat) == 'New hospital discharges'] <- 'new_hospital_discharges'
 names(dat)[names(dat) == 'Cumulative hospital discharges'] <- 'cumulative_hospital_discharges'
 names(dat)[names(dat) == 'Total deaths'] <- 'total_deaths'
 
@@ -149,71 +147,115 @@ server <- function(input, output) {
                )}
   )
   
+  # create reactive dfrm
   data <- reactive({dat})
+  # create reactive date time object
+  dt <- reactive({dat$Date})
+  # create reactive dfrm for use with xts
+  dat2 <- reactive({subset(dat, select = -Date)})
   
+  # create xts objects
+  npl.data <- reactive({
+    ts <- xts(dat2()$`New positive labs`, dt())
+    ma <- rollmean(ts, length(dt())/7)
+    dfrm <- na.locf(merge(ts, ma))
+  })
+  
+  nnl.data <- reactive({
+    ts <- xts(dat2()$`New negative labs`, dt())
+    ma <- rollmean(ts, length(dt())/7)
+    na.locf(merge(ts, ma))
+  })
+  
+  nha.data <- reactive({
+    ts <- xts(dat2()$`New hospital admissions`, dt())
+    ma <- rollmean(ts, length(dt())/7)
+    na.locf(merge(ts, ma))
+  })
+  
+  nhd.data <- reactive({
+    ts <- xts(dat2()$`New hospital discharges`, dt())
+    ma <- rollmean(ts, length(dt())/7)
+    na.locf(merge(ts, ma))
+  })
+    
   # plotting for testing data
   output$"New Positive Labs" <- renderPlot({
-    ggplot(data(), aes(x=Date, y=new_positive_labs)) + 
-    geom_line() + labs(x = "Date", y = "New Positive Labs")
+    plot(npl.data(), bg="#D3D3D3", 
+         main='New Positive Labs \nWith Seven Day Rolling Mean', 
+         yaxis.right=FALSE, 
+         grid.ticks.lwd=0)
   })
   
   output$"Total Positive Labs" <- renderPlot({
     ggplot(data(), aes(x=Date, y=total_positive_labs)) + 
     geom_area(fill="blue", alpha=0.2) + geom_line() +
-    labs(x = "Date", y = "Total Positive Labs")
+    labs(x = "Date", y = "Total Positive Labs") +
+    theme(panel.background = element_rect(fill = "#D3D3D3"))
   })
   
   output$"New Negative Labs" <- renderPlot({
-    ggplot(data(), aes(x=Date, y=new_negative_labs)) + 
-    geom_line() + 
-    labs(x = "Date", y = "New Negative Labs")
+    plot(nnl.data(), bg="#D3D3D3", 
+         main='New Negative Labs  \nWith Seven Day Rolling Mean', 
+         yaxis.right=FALSE, 
+         grid.ticks.lwd=0)
   })
   
   output$"Total Negative Labs" <- renderPlot({
     ggplot(data(), aes(x=Date, y=total_negative_labs)) + 
     geom_area(fill="blue", alpha=0.2) + geom_line() +
-    labs(x = "Date", y = "Total Negative Labs")
+    labs(x = "Date", y = "Total Negative Labs") +
+    theme(panel.background = element_rect(fill = "#D3D3D3"))
   })
   
   output$"Total Tested" <- renderPlot({
     ggplot(data(), aes(x=Date, y=total_tested)) + 
     geom_area(fill="blue", alpha=0.2) + geom_line() + 
-    labs(x = "Date", y = "Total Tested")
+    labs(x = "Date", y = "Total Tested") +
+    theme(panel.background = element_rect(fill = "#D3D3D3"))
   })
     
   # plotting for hospital data
-  output$"New Hospital Admissions" <-renderPlot({
-    ggplot(data(), aes(x=Date, y=new_hospital_admits)) + 
-    geom_line() + 
-    labs(x = "Date", y = "New Hospital Admissions")
+  output$"New Hospital Admissions" <- renderPlot({
+    plot(nha.data(), bg="#D3D3D3", 
+         main='New Hospital Admissions \nWith Seven Day Rolling Mean', 
+         yaxis.right=FALSE, 
+         grid.ticks.lwd=0)
   })
   
   output$"Cumulative Hospital Admissions" <- renderPlot({
     ggplot(data(), aes(x=Date, y=cumulative_hospital_admits)) + 
     geom_area(fill="blue", alpha=0.2) + geom_line() + 
-    labs(x = "Date", y = "Cumulative Hospital Admissions")
+    labs(x = "Date", y = "Cumulative Hospital Admissions") +
+    theme(panel.background = element_rect(fill = "#D3D3D3"))
   })
   
   output$"New Hospital Discharges" <- renderPlot({
-    ggplot(data(), aes(x=Date, y=new_hospital_discharges)) + 
-    geom_line() + 
-    labs(x = "Date", y = "New Hospital Discharges")
+    plot(nhd.data(), bg="#D3D3D3",
+         main='New Hospital Discharges \nWith Seven Day Rolling Mean', 
+         yaxis.right=FALSE, 
+         grid.ticks.lwd=0)
   })
   
   output$"Cumulative Hospital Discharges" <- renderPlot({
     ggplot(data(), aes(x=Date, y=cumulative_hospital_discharges)) + 
       geom_area(fill="blue", alpha=0.2) + geom_line() +
-      labs(x = "Date", y = "Cumulative Hospital Discharges")
+      labs(x = "Date", y = "Cumulative Hospital Discharges") +
+      theme(panel.background = element_rect(fill = "#D3D3D3"))
   })
   
   # plotting for mortality data
-  output$"Deaths" <- renderPlot({ggplot(data(), aes(x=Date, y=Deaths)) + geom_line()})
+  output$"Deaths" <- renderPlot({ggplot(data(), aes(x=Date, y=Deaths)) + 
+      geom_line() +
+      theme(panel.background = element_rect(fill = "#D3D3D3"))
+    })
   
   output$"Total Deaths" <- renderPlot({
     ggplot(data(), aes(x=Date, y=total_deaths)) + 
     geom_area(fill="blue", alpha=0.2) + 
     geom_line() +
-    labs(x = "Date", y = "Total Deaths")
+    labs(x = "Date", y = "Total Deaths") +
+    theme(panel.background = element_rect(fill = "#D3D3D3"))
   })
 }
 
