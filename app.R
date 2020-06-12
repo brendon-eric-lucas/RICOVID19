@@ -4,25 +4,11 @@ library(xts)
 library(zoo)
 library(shiny)
 
-# set default access for a public google shhet
-gs4_deauth()
-
-# render google sheet as dataframe
-dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                  sheet = "Trends")
-
-# rename total columns
-names(dat)[names(dat) == 'Total positive labs'] <- 'total_positive_labs'
-names(dat)[names(dat) == 'Total negative labs'] <- 'total_negative_labs'
-names(dat)[names(dat) == 'Total tested'] <- 'total_tested'
-names(dat)[names(dat) == 'Cumulative hospital admissions'] <- 'cumulative_hospital_admits'
-names(dat)[names(dat) == 'Cumulative hospital discharges'] <- 'cumulative_hospital_discharges'
-names(dat)[names(dat) == 'Total deaths'] <- 'total_deaths'
-
 ui <- fluidPage(
+  # graphic
   
   # App title ----
-  titlePanel(h3("Rhode Island COVID-19 Tracker")),
+  titlePanel(h3(align="center", style="background-color: #93CCEA", "Rhode Island COVID-19 Tracker")),
   
   # Creates navlist panel screen right ----
   navlistPanel(
@@ -79,80 +65,25 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
-  
-  # set up event observers
-  observeEvent(input$update_npl, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                      sheet = "Trends"
-              )}
-  )
-  
-  observeEvent(input$update_tpl, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_nnl, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_ntl, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_tt, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_nha, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_cha, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_nhd, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_chd, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_d, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
-  observeEvent(input$update_td, 
-               {dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                                  sheet = "Trends"
-               )}
-  )
-  
+  # set default access for a public google shhet
+  gs4_deauth()
+  # render google sheet as dataframe
+  dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
+                    sheet = "Trends")
   # create reactive dfrm
-  data <- reactive({dat})
+  data <- reactive(quote(dat), quoted = TRUE)
   # create reactive date time object
   dt <- reactive({dat$Date})
   # create reactive dfrm for use with xts
   dat2 <- reactive({subset(dat, select = -Date)})
+  
+  # rename total columns
+  names(dat)[names(dat) == 'Total positive labs'] <- 'total_positive_labs'
+  names(dat)[names(dat) == 'Total negative labs'] <- 'total_negative_labs'
+  names(dat)[names(dat) == 'Total tested'] <- 'total_tested'
+  names(dat)[names(dat) == 'Cumulative hospital admissions'] <- 'cumulative_hospital_admits'
+  names(dat)[names(dat) == 'Cumulative hospital discharges'] <- 'cumulative_hospital_discharges'
+  names(dat)[names(dat) == 'Total deaths'] <- 'total_deaths'
   
   # create xts objects
   npl.data <- reactive({
@@ -184,7 +115,7 @@ server <- function(input, output) {
     ma <- rollmean(ts, length(dt())/7)
     na.locf(merge(ts, ma))
   })
-    
+  
   # plotting for testing data
   output$"New Positive Labs" <- renderPlot({
     plot(npl.data(), bg="#D3D3D3", 
