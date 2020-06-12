@@ -12,4 +12,5 @@ If you're looking for the official public record of Covid-19 testing and cases i
 please consult the official data tracker maintained by the Rhode Island Department of Health. This tracker is a personal
 project and does not supplant or compete with the tracker maintained by the Rhode Island Department of Health.
 
-![Sample Visualization](covid.png "Sample Visualization")
+![Sample Visualization 1](covid1 "Sample Visualization")
+![Sample Visualization 2](covid2 "Sample Visualization")
