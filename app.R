@@ -4,6 +4,12 @@ library(xtable)
 library(xts)
 library(zoo)
 library(shiny)
+library(lubridate)
+
+# Instructions
+instr <- paste("Hover over a point on the graph to display values above. ", 
+               "Values not lying on the graph will also display, but are ",
+               "not meaningful.", sep="")
 
 ui <- fluidPage(
   
@@ -17,7 +23,9 @@ ui <- fluidPage(
     
     tabPanel("New Positive Labs", 
               mainPanel(plotOutput("New Positive Labs", hover = "plot_hover"),
-                        verbatimTextOutput("info_npl")
+                        verbatimTextOutput("info_npl"),
+                        p(instr)
+                       
                 ) 
             ),
     
@@ -27,7 +35,8 @@ ui <- fluidPage(
     
     tabPanel("New Negative Labs", 
               mainPanel(plotOutput("New Negative Labs", hover = "plot_hover"),
-                        verbatimTextOutput("info_nnl")
+                        verbatimTextOutput("info_nnl"),
+                        p(instr)
                 )
              ),
     
@@ -43,7 +52,8 @@ ui <- fluidPage(
     
     tabPanel("New Hospital Admissions", 
               mainPanel(plotOutput("New Hospital Admissions", hover = "plot_hover"),
-                        verbatimTextOutput("info_nha")      
+                        verbatimTextOutput("info_nha"),
+                        p(instr)
                   )
              ),
     
@@ -53,7 +63,8 @@ ui <- fluidPage(
     
     tabPanel("New Hospital Discharges",
               mainPanel(plotOutput("New Hospital Discharges", hover = "plot_hover"),
-                        verbatimTextOutput("info_nhd")
+                        verbatimTextOutput("info_nhd"),
+                        p(instr)
                   )
              ),
     
@@ -70,7 +81,9 @@ ui <- fluidPage(
     tabPanel("Total Deaths",
               mainPanel(plotOutput("Total Deaths"))
              )
-  )
+  ),
+  
+  p("WHERE DOES THIS TEXT DISPLAY")
 )
 
 server <- function(input, output) {
@@ -129,7 +142,8 @@ server <- function(input, output) {
   output$info_npl <- renderText({
     xy_str <- function(e) {
       if(is.null(e)) return("(- , -)\n")
-      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+      dt <- date(strptime("1970-01-01", "%Y-%m-%d", tz="GMT") + e$x)
+      paste0("date = ", dt, " | ",  "new pos labs = ", round(e$y, 0), "\n")
     }
     paste0(
       "(Date, Value) : ", xy_str(input$plot_hover)
@@ -139,7 +153,8 @@ server <- function(input, output) {
   output$info_nnl <- renderText({
     xy_str <- function(e) {
       if(is.null(e)) return("(- , -)\n")
-      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+      dt <- date(strptime("1970-01-01", "%Y-%m-%d", tz="GMT") + e$x)
+      paste0("date = ", dt, " | ",  "new neg labs = ", round(e$y, 0), "\n")
     }
     paste0(
       "(Date, Value) : ", xy_str(input$plot_hover)
@@ -149,7 +164,8 @@ server <- function(input, output) {
   output$info_nha <- renderText({
     xy_str <- function(e) {
       if(is.null(e)) return("(- , -)\n")
-      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+      dt <- date(strptime("1970-01-01", "%Y-%m-%d", tz="GMT") + e$x)
+      paste0(" date = ", dt, " | ", "new hospital admits = ", round(e$y, 0), "\n")
     }
     paste0(
       "(Date, Value) : ", xy_str(input$plot_hover)
@@ -159,7 +175,8 @@ server <- function(input, output) {
   output$info_nhd <- renderText({
     xy_str <- function(e) {
       if(is.null(e)) return("(- , -)\n")
-      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+      dt <- date(strptime("1970-01-01", "%Y-%m-%d", tz="GMT") + e$x)
+      paste0("date = ", dt, " | ", "new hosp discharges = ", round(e$y, 0), "\n")
     }
     paste0(
       "(Date, Value) : ", xy_str(input$plot_hover)
