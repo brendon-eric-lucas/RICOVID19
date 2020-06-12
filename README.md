@@ -13,4 +13,7 @@ please consult the official data tracker maintained by the Rhode Island Departme
 project and does not supplant or compete with the tracker maintained by the Rhode Island Department of Health.
 
 ![Sample Visualization 1](covid1.png "Sample Visualization")
+
+---
+
 ![Sample Visualization 2](covid2.png "Sample Visualization")
