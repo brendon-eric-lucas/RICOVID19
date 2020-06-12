@@ -1,65 +1,74 @@
 library(googlesheets4)
 library(ggplot2)
+library(xtable)
 library(xts)
 library(zoo)
 library(shiny)
 
 ui <- fluidPage(
-  # graphic
   
   # App title ----
   titlePanel(h3(align="center", style="background-color: #93CCEA", "Rhode Island COVID-19 Tracker")),
   
   # Creates navlist panel screen right ----
   navlistPanel(
+    
     "Testing Data", # testing data panels
     
     tabPanel("New Positive Labs", 
-              mainPanel(plotOutput("New Positive Labs"), actionButton("update_npl", "Update")) 
+              mainPanel(plotOutput("New Positive Labs", hover = "plot_hover"),
+                        verbatimTextOutput("info_npl")
+                ) 
             ),
     
     tabPanel("Total Positive Labs", 
-              mainPanel(plotOutput("Total Positive Labs"), actionButton("update_tpl", "Update"))
+              mainPanel(plotOutput("Total Positive Labs"))
              ),
     
     tabPanel("New Negative Labs", 
-              mainPanel(plotOutput("New Negative Labs"), actionButton("update_nnl", "Update"))
+              mainPanel(plotOutput("New Negative Labs", hover = "plot_hover"),
+                        verbatimTextOutput("info_nnl")
+                )
              ),
     
     tabPanel("Total Negative Labs", 
-              mainPanel(plotOutput("Total Negative Labs"), actionButton("update_ntl", "Update"))
+              mainPanel(plotOutput("Total Negative Labs"))
              ),
     
     tabPanel("Total Tested",
-              mainPanel(plotOutput("Total Tested"), actionButton("update_tt", "Update"))
+              mainPanel(plotOutput("Total Tested"))
              ),
     
     "Hospital Data", # hospital data panels
     
-    tabPanel("New Hospital Admissions",
-              mainPanel(plotOutput("New Hospital Admissions"), actionButton("update_nha", "Update"))
+    tabPanel("New Hospital Admissions", 
+              mainPanel(plotOutput("New Hospital Admissions", hover = "plot_hover"),
+                        verbatimTextOutput("info_nha")      
+                  )
              ),
     
     tabPanel("Cumulative Hospital Admissions",
-              mainPanel(plotOutput("Cumulative Hospital Admissions"), actionButton("update_cha", "Update"))
+              mainPanel(plotOutput("Cumulative Hospital Admissions"))
              ),
     
     tabPanel("New Hospital Discharges",
-              mainPanel(plotOutput("New Hospital Discharges"), actionButton("update_nhd", "Update"))
+              mainPanel(plotOutput("New Hospital Discharges", hover = "plot_hover"),
+                        verbatimTextOutput("info_nhd")
+                  )
              ),
     
     tabPanel("Cumulative Hospital Discharges",
-              mainPanel(plotOutput("Cumulative Hospital Discharges"), actionButton("update_chd", "Update"))
+              mainPanel(plotOutput("Cumulative Hospital Discharges"))
              ),
     
     "Mortality Data", # mortality data panels
     
     tabPanel("Deaths",
-              mainPanel(plotOutput("Deaths"), actionButton("update_d", "Update"))
+              mainPanel(plotOutput("Deaths"))
              ),
     
     tabPanel("Total Deaths",
-              mainPanel(plotOutput("Total Deaths"), actionButton("update_td", "Update"))
+              mainPanel(plotOutput("Total Deaths"))
              )
   )
 )
@@ -67,11 +76,11 @@ ui <- fluidPage(
 server <- function(input, output) {
   # set default access for a public google shhet
   gs4_deauth()
-  # render google sheet as dataframe
+  # render google sheets as dataframe
   dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
                     sheet = "Trends")
   # create reactive dfrm
-  data <- reactive(quote(dat), quoted = TRUE)
+  data <- reactive(dat)
   # create reactive date time object
   dt <- reactive({dat$Date})
   # create reactive dfrm for use with xts
@@ -114,6 +123,47 @@ server <- function(input, output) {
     ts <- xts(dat2()$`Deaths`, dt())
     ma <- rollmean(ts, length(dt())/7)
     na.locf(merge(ts, ma))
+  })
+  
+  # print date and value below plot on hover
+  output$info_npl <- renderText({
+    xy_str <- function(e) {
+      if(is.null(e)) return("(- , -)\n")
+      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+    }
+    paste0(
+      "(Date, Value) : ", xy_str(input$plot_hover)
+    )
+  })
+  
+  output$info_nnl <- renderText({
+    xy_str <- function(e) {
+      if(is.null(e)) return("(- , -)\n")
+      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+    }
+    paste0(
+      "(Date, Value) : ", xy_str(input$plot_hover)
+    )
+  })
+  
+  output$info_nha <- renderText({
+    xy_str <- function(e) {
+      if(is.null(e)) return("(- , -)\n")
+      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+    }
+    paste0(
+      "(Date, Value) : ", xy_str(input$plot_hover)
+    )
+  })
+  
+  output$info_nhd <- renderText({
+    xy_str <- function(e) {
+      if(is.null(e)) return("(- , -)\n")
+      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+    }
+    paste0(
+      "(Date, Value) : ", xy_str(input$plot_hover)
+    )
   })
   
   # plotting for testing data
@@ -208,6 +258,7 @@ server <- function(input, output) {
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank())
   })
+  
 }
 
 shinyApp(ui = ui, server = server)
