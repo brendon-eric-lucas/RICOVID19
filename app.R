@@ -81,9 +81,7 @@ ui <- fluidPage(
     tabPanel("Total Deaths",
               mainPanel(plotOutput("Total Deaths"))
              )
-  ),
-  
-  p("WHERE DOES THIS TEXT DISPLAY")
+  )
 )
 
 server <- function(input, output) {
