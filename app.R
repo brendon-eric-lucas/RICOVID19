@@ -88,8 +88,8 @@ server <- function(input, output) {
   # set default access for a public google shhet
   gs4_deauth()
   # render google sheets as dataframe
-  dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=590763272",
-                    sheet = "Trends")
+  dat <- read_sheet("https://docs.google.com/spreadsheets/d/1n-zMS9Al94CPj_Tc3K7Adin-tN9x1RSjjx2UzJ4SV7Q/edit#gid=1225599023",
+                    sheet = "COVID Trends")
   # create reactive dfrm
   data <- reactive(dat)
   # create reactive date time object
