@@ -8,7 +8,7 @@ library(lubridate)
 
 # Instructions
 instr <- paste("Hover over a point on the graph to display values above. ", 
-               "Values not lying on the graph will also display, but are ",
+               "Values not lying on the curve(s) will also be displayed but are ",
                "not meaningful.", sep="")
 
 ui <- fluidPage(
@@ -75,7 +75,10 @@ ui <- fluidPage(
     "Mortality Data", # mortality data panels
     
     tabPanel("Deaths",
-              mainPanel(plotOutput("Deaths"))
+              mainPanel(plotOutput("Deaths", hover = "plot_hover"),
+                        verbatimTextOutput("info_d"),
+                        p(instr)
+                        )
              ),
     
     tabPanel("Total Deaths",
@@ -175,6 +178,17 @@ server <- function(input, output) {
       if(is.null(e)) return("(- , -)\n")
       dt <- date(strptime("1970-01-01", "%Y-%m-%d", tz="GMT") + e$x)
       paste0("date = ", dt, " | ", "new hosp discharges = ", round(e$y, 0), "\n")
+    }
+    paste0(
+      "(Date, Value) : ", xy_str(input$plot_hover)
+    )
+  })
+  
+  output$info_d <- renderText({
+    xy_str <- function(e) {
+      if(is.null(e)) return("(- , -)\n")
+      dt <- date(strptime("1970-01-01", "%Y-%m-%d", tz="GMT") + e$x)
+      paste0("date = ", dt, " | ", "deaths = ", round(e$y, 0), "\n")
     }
     paste0(
       "(Date, Value) : ", xy_str(input$plot_hover)
