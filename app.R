@@ -14,7 +14,7 @@ instr <- paste("Hover over a point on the graph to display values above. ",
 ui <- fluidPage(
   
   # App title ----
-  titlePanel(h3(align="center", style="background-color: #93CCEA", "Rhode Island COVID-19 Tracker")),
+  titlePanel(h3(align="center", style="background-color: #93CCEA", "Rhode Island COVID-19 Tracker"), windowTitle = "RI COVID-19 Tracker"),
   
   # Creates navlist panel screen right ----
   navlistPanel(
